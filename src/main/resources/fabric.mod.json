@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "multimine",
+  "version": "${version}",
+  "name": "MultiMine",
+  "description": "Pause mining mid-way through a block and come back later — block damage stays where you left it.",
+  "authors": [
+    "sideways_sky"
+  ],
+  "license": "All-Rights-Reserved",
+  "icon": "assets/multimine/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.sideways_sky.multimine.fabric.MultimineFabric"
+    ],
+    "client": [
+      "net.sideways_sky.multimine.fabric.client.MultimineFabricClient"
+    ]
+  },
+  "mixins": [
+    "multimine.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "~26.2",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

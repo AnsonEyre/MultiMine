@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.sideways_sky.multimine.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "minVersion": "0.8",
+  "client": [],
+  "mixins": [
+    "ServerPlayerInteractionMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
