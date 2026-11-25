@@ -1,104 +1,63 @@
 package net.sideways_sky.multimine;
 
-import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
-import org.bukkit.Bukkit;
-import org.bukkit.Particle;
-import org.bukkit.SoundCategory;
-import org.bukkit.block.Block;
-
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import org.jetbrains.annotations.Nullable;
 
 public class DamagedBlock {
-    public static int FadeStartDelay = 40;
-    public static int FadeIntervalDelay = 20;
-    public static float FadeDamageReduction = 0.1F;
-
-    public DamagedBlock(Block block){
-        this.block = block;
-        entityId = net.minecraft.world.entity.Entity.nextEntityId();
-        debugMessage("Created");
-    }
-    public void debugMessage(String message){
-        MultiMine.debugMessage("Block[ " + entityId + " ]: " + message);
-    }
-
+    public static final Map<BlockPos, DamagedBlock> damagedBlocksMap = new HashMap<>();
     private final int entityId;
-    public Map<Entity, Float> entityDamageMap = new HashMap<>();
+    public final ServerLevel world;
+    public final BlockPos pos;
+    public int progress;
+    @Nullable
+    private Scheduler.Task fading;
 
-    private final Block block;
-    public void brake(Entity entity){
+    public DamagedBlock(ServerLevel world, BlockPos pos, int currentProgress) {
+        this.entityId = world.getNextEntityId();
+        this.world = world;
+        this.pos = pos;
+        this.progress = currentProgress;
+    }
 
-        if(entity instanceof Player player){
-            MultiMine.debugMessage("Brake - player");
-            if(player.breakBlock(block)) {
-                block.getWorld().playSound(
-                        block.getLocation(),
-                        block.getBlockSoundGroup().getBreakSound(),
-                        SoundCategory.BLOCKS,
-                        1.0f, 1.0f
-                );
-                block.getWorld().spawnParticle(
-                        Particle.BLOCK,
-                        block.getLocation().add(0.5, 0.5, 0.5),
-                        20, 0.3, 0.3, 0.3,
-                        block.getBlockData());
+    public void stopFade() {
+        if (this.fading != null) {
+            this.fading.cancel();
+            this.fading = null;
+        }
+    }
+
+    public void startFade() {
+        if (this.fading != null) {
+            return;
+        }
+        this.fading = Scheduler.repeat(40L, 20L, task -> {
+            --this.progress;
+            if (this.progress < 1) {
+                this.world.destroyBlockProgress(this.entityId, this.pos, -1);
+                this.delete();
+                return;
             }
-        } else {
-            MultiMine.debugMessage("Brake - non player");
-            block.breakNaturally(true);
+            this.sendUpdate();
+        });
+    }
+
+    public void delete() {
+        this.delete(true);
+    }
+
+    public void delete(boolean update) {
+        this.stopFade();
+        this.progress = -1;
+        if (update) {
+            this.sendUpdate();
         }
+        damagedBlocksMap.remove(this.pos);
     }
 
-    public float damage = 0;
-    private @Nullable ScheduledTask fadeTask = null;
-
-    public void startFade(){
-        debugMessage("Fade Start");
-        fadeTask = MultiMine.instance.getServer().getRegionScheduler().runAtFixedRate(MultiMine.instance, block.getLocation(), (e) -> fade(), FadeStartDelay, FadeIntervalDelay);
+    public void sendUpdate() {
+        this.world.destroyBlockProgress(this.entityId, this.pos, this.progress);
     }
-    public void stopFade(){
-        if(fadeTask != null){
-            debugMessage("Fade Stop");
-            fadeTask.cancel();
-            fadeTask = null;
-        }
-    }
-
-    public void delete(){
-        stopFade();
-        sendPacket(-1);
-        Events.damagedBlockMap.remove(block);
-        debugMessage("Deleted");
-    }
-
-    public void fade(){
-        float preFadeDamageReduction = damage;
-        damage -= FadeDamageReduction;
-        Consumer<String> message = (messageSuffix) -> debugMessage("Fade: " + damage + " -= " + FadeDamageReduction + messageSuffix);
-        if(damage < 0){
-            message.accept(" -deleting");
-            delete();
-        } else if (Math.round(damage * 10F) != Math.round(preFadeDamageReduction * 10F)) {
-            message.accept(" -updating");
-            sendPacket();
-        } else {
-            message.accept("");
-        }
-    }
-
-    public void sendPacket(){
-        sendPacket(Math.round(damage * 10F));
-    }
-    private void sendPacket(int progress){
-        ((CraftWorld) block.getWorld()).getHandle().destroyBlockProgress(entityId, ((CraftBlock) block).getPosition(), progress);
-    }
-
 }
