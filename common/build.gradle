@@ -1,0 +1,8 @@
+plugins {
+    id 'java-library'
+}
+
+// Lowest Java version any platform runs on, so every platform can use it.
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+}

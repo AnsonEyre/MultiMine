@@ -1,11 +1,10 @@
 {
   "required": true,
-  "package": "net.sideways_sky.multimine.mixin",
+  "package": "net.sideways_sky.multimine.fabric.mixin",
   "compatibilityLevel": "JAVA_25",
   "minVersion": "0.8",
-  "client": [],
   "mixins": [
-    "ServerPlayerInteractionMixin"
+    "ServerPlayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

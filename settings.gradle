@@ -4,9 +4,21 @@ pluginManagement {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
+        maven {
+            name = 'PaperMC'
+            url = 'https://repo.papermc.io/repository/maven-public/'
+        }
         mavenCentral()
         gradlePluginPortal()
     }
 }
 
-rootProject.name = 'multimine'
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+rootProject.name = 'MultiMine'
+
+// common: plain Java, no Minecraft dependency. Holds the shared mining logic.
+// paper / fabric: platform glue. Add neoforge (or an Architectury setup) the same way.
+include 'common', 'paper', 'fabric'

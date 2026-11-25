@@ -3,9 +3,9 @@
   "id": "multimine",
   "version": "${version}",
   "name": "MultiMine",
-  "description": "Pause mining mid-way through a block and come back later — block damage stays where you left it.",
+  "description": "You don't have to mine nonstop on a block to finish it off. You can pause, and come back later.",
   "authors": [
-    "sideways_sky"
+    "Sideways-Sky"
   ],
   "license": "All-Rights-Reserved",
   "icon": "assets/multimine/icon.png",
@@ -13,9 +13,6 @@
   "entrypoints": {
     "main": [
       "net.sideways_sky.multimine.fabric.MultimineFabric"
-    ],
-    "client": [
-      "net.sideways_sky.multimine.fabric.client.MultimineFabricClient"
     ]
   },
   "mixins": [
@@ -26,5 +23,9 @@
     "minecraft": "~26.2",
     "java": ">=25",
     "fabric-api": "*"
+  },
+  "contact": {
+    "sources": "https://github.com/AnsonEyre/MultiMine",
+    "issues": "https://github.com/AnsonEyre/MultiMine/issues"
   }
 }
