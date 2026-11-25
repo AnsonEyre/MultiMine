@@ -1,0 +1,28 @@
+modLoader = "javafml"
+loaderVersion = "[0,)"
+license = "All-Rights-Reserved"
+issueTrackerURL = "https://github.com/AnsonEyre/MultiMine/issues"
+
+[[mods]]
+modId = "multimine"
+version = "${version}"
+displayName = "MultiMine"
+authors = "Sideways-Sky"
+description = "You don't have to mine nonstop on a block to finish it off. You can pause, and come back later."
+logoFile = "assets/multimine/icon.png"
+
+[[dependencies.multimine]]
+modId = "forge"
+mandatory = true
+versionRange = "[65,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.multimine]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[26.2,26.3)"
+ordering = "NONE"
+side = "BOTH"
+
+# The mixin config is listed in the jar manifest (MixinConfigs), set up by loom.forge.mixinConfig.

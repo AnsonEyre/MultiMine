@@ -1,0 +1,30 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "All-Rights-Reserved"
+issueTrackerURL = "https://github.com/AnsonEyre/MultiMine/issues"
+
+[[mods]]
+modId = "multimine"
+version = "${version}"
+displayName = "MultiMine"
+authors = "Sideways-Sky"
+description = "You don't have to mine nonstop on a block to finish it off. You can pause, and come back later."
+iconFile = "assets/multimine/icon.png"
+displayTest = "IGNORE_ALL_VERSION"
+
+[[dependencies.multimine]]
+modId = "neoforge"
+type = "required"
+versionRange = "[26.2,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.multimine]]
+modId = "minecraft"
+type = "required"
+versionRange = "[26.2,26.3)"
+ordering = "NONE"
+side = "BOTH"
+
+[[mixins]]
+config = "multimine.mixins.json"

@@ -1,4 +1,4 @@
-package net.sideways_sky.multimine.fabric;
+package net.sideways_sky.multimine.mod;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -6,39 +6,40 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.sideways_sky.multimine.common.DamageTracker;
-import net.sideways_sky.multimine.common.MultiMineConfig;
+import net.sideways_sky.multimine.core.DamageTracker;
+import net.sideways_sky.multimine.core.MultiMineConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class MultimineFabric implements ModInitializer {
+/**
+ * Loader-independent mod setup. Each loader module calls {@link #init} once at startup, and
+ * forwards its server tick and server stopping events to {@link #onServerTick} and
+ * {@link #onServerStopping}. The block events come from {@code ServerPlayerGameModeMixin}.
+ */
+public final class MultiMineMod {
     public static final String MOD_ID = "multimine";
     public static final Logger LOGGER = LoggerFactory.getLogger("MultiMine");
-    public static DamageTracker<FabricBlock, ServerPlayer> tracker;
+    public static DamageTracker<ModBlock, ServerPlayer> tracker;
 
-    @Override
-    public void onInitialize() {
-        tracker = new DamageTracker<>(new FabricPlatform(), loadConfig());
-
-        ServerTickEvents.END_SERVER_TICK.register(server -> Scheduler.tick());
-        ServerLifecycleEvents.SERVER_STOPPING.register(server -> tracker.clear());
-        PlayerBlockBreakEvents.AFTER.register((level, player, pos, state, blockEntity) -> {
-            if (level instanceof ServerLevel serverLevel) {
-                tracker.onBroken(new FabricBlock(serverLevel, pos));
-            }
-        });
+    private MultiMineMod() {
     }
 
-    private static MultiMineConfig loadConfig() {
+    public static void init(Path configDir) {
+        tracker = new DamageTracker<>(new ModPlatform(), loadConfig(configDir.resolve(MOD_ID + ".properties")));
+        LOGGER.info("MultiMine initialized");
+    }
+
+    public static void onServerTick() {
+        Scheduler.tick();
+    }
+
+    public static void onServerStopping() {
+        tracker.clear();
+    }
+
+    private static MultiMineConfig loadConfig(Path path) {
         MultiMineConfig config = new MultiMineConfig();
-        Path path = FabricLoader.getInstance().getConfigDir().resolve(MOD_ID + ".properties");
         Properties props = new Properties();
         if (Files.exists(path)) {
             try (Reader reader = Files.newBufferedReader(path)) {

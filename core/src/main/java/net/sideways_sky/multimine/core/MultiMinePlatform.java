@@ -1,4 +1,4 @@
-package net.sideways_sky.multimine.common;
+package net.sideways_sky.multimine.core;
 
 /**
  * What a server platform (Paper, Fabric, NeoForge, ...) has to provide for {@link DamageTracker} to work.

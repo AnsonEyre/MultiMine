@@ -12,7 +12,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.sideways_sky.multimine.fabric.MultimineFabric"
+      "net.sideways_sky.multimine.fabric.MultiMineFabric"
     ]
   },
   "mixins": [

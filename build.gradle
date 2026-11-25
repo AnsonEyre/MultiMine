@@ -1,3 +1,10 @@
+plugins {
+    // Declared here so the Architectury plugin and Loom share one classloader. Applied in the mod modules.
+    id 'dev.architectury.loom-no-remap' version '1.17.493' apply false
+    id 'architectury-plugin' version '3.5.170' apply false
+    id 'com.gradleup.shadow' version '9.6.1' apply false
+}
+
 subprojects {
     group = rootProject.maven_group
     version = rootProject.mod_version
@@ -14,6 +21,6 @@ subprojects {
 // Collect every platform jar in build/libs at the root.
 tasks.register('collectJars', Copy) {
     from(project(':paper').tasks.named('jar'))
-    from(project(':fabric').tasks.named('jar'))
+    ['fabric', 'neoforge', 'forge'].each { from(project(":$it").tasks.named('shadowJar')) }
     into layout.buildDirectory.dir('libs')
 }

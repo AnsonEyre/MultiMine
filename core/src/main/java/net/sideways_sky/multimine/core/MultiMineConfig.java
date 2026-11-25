@@ -1,4 +1,4 @@
-package net.sideways_sky.multimine.common;
+package net.sideways_sky.multimine.core;
 
 /** Settings shared by every platform. Each platform loads these from its own config format. */
 public final class MultiMineConfig {

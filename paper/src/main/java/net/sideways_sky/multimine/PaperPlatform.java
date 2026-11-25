@@ -1,7 +1,7 @@
 package net.sideways_sky.multimine;
 
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
-import net.sideways_sky.multimine.common.MultiMinePlatform;
+import net.sideways_sky.multimine.core.MultiMinePlatform;
 import org.bukkit.Particle;
 import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;

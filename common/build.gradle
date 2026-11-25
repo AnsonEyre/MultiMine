@@ -1,8 +1,23 @@
 plugins {
-    id 'java-library'
+    id 'dev.architectury.loom-no-remap'
+    id 'architectury-plugin'
 }
 
-// Lowest Java version any platform runs on, so every platform can use it.
+architectury {
+    minecraft = rootProject.minecraft_version
+    common('fabric', 'neoforge', 'forge')
+}
+
+// The plain-Java core is compiled into this module, so it goes through Architectury's transforms
+// and ends up inside each loader's mod (both in the built jars and in dev runs).
+sourceSets.main.java.srcDir project(':core').file('src/main/java')
+
+dependencies {
+    minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+    // Only for the Mixin annotations; nothing Fabric-specific is used here.
+    compileOnly "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+}
+
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
 }

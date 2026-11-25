@@ -1,7 +1,7 @@
 package net.sideways_sky.multimine;
 
-import net.sideways_sky.multimine.common.DamageTracker;
-import net.sideways_sky.multimine.common.MultiMineConfig;
+import net.sideways_sky.multimine.core.DamageTracker;
+import net.sideways_sky.multimine.core.MultiMineConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;

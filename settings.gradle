@@ -5,6 +5,14 @@ pluginManagement {
             url = 'https://maven.fabricmc.net/'
         }
         maven {
+            name = 'Architectury'
+            url = 'https://maven.architectury.dev/'
+        }
+        maven {
+            name = 'MinecraftForge'
+            url = 'https://maven.minecraftforge.net/'
+        }
+        maven {
             name = 'PaperMC'
             url = 'https://repo.papermc.io/repository/maven-public/'
         }
@@ -19,6 +27,10 @@ plugins {
 
 rootProject.name = 'MultiMine'
 
-// common: plain Java, no Minecraft dependency. Holds the shared mining logic.
-// paper / fabric: platform glue. Add neoforge (or an Architectury setup) the same way.
-include 'common', 'paper', 'fabric'
+// core: plain Java, no Minecraft dependency. The mining logic, shared by the Paper plugin and the mod.
+include 'core'
+// paper: the Paper plugin.
+include 'paper'
+// common: Architectury common module. Minecraft-side mod code (mixins, platform impl) shared by every loader.
+// fabric / neoforge / forge: thin loader entrypoints.
+include 'common', 'fabric', 'neoforge', 'forge'

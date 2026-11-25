@@ -17,16 +17,16 @@ repositories {
 
 dependencies {
     paperweight.paperDevBundle(rootProject.paper_dev_bundle)
-    implementation project(':common')
+    implementation project(':core')
 }
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(21)
 }
 
-// Bundle the common classes into the plugin jar.
+// Bundle the core classes into the plugin jar.
 jar {
-    from(project(':common').sourceSets.main.output)
+    from(project(':core').sourceSets.main.output)
 }
 
 tasks.named('runServer') {

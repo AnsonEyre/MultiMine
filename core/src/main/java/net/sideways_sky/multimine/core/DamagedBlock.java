@@ -1,4 +1,4 @@
-package net.sideways_sky.multimine.common;
+package net.sideways_sky.multimine.core;
 
 import java.util.HashMap;
 import java.util.Map;

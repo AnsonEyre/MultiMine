@@ -28,14 +28,27 @@ One Gradle build produces every platform's jar:
 ./gradlew build collectJars
 ```
 
-Jars land in `build/libs/` (`MultiMine-<version>.jar` for Paper/Purpur/Folia, `MultiMine-fabric-<version>.jar` for Fabric).
-Gradle downloads the JDKs it needs (21 for Paper, 25 for Fabric) on first run.
+Jars land in `build/libs/`:
 
-| Module   | What it is |
-|----------|------------|
-| `common` | Plain Java, no Minecraft dependency. All the mining/fade logic (`DamageTracker`). |
-| `paper`  | Paper plugin. Forwards Bukkit block events to the tracker. |
-| `fabric` | Fabric mod. Mixins on `ServerPlayerGameMode` forward the same events. |
+| Jar | Runs on |
+|-----|---------|
+| `MultiMine-<version>.jar` | Paper / Purpur / Folia |
+| `MultiMine-fabric-<version>.jar` | Fabric (needs Fabric API) |
+| `MultiMine-neoforge-<version>.jar` | NeoForge |
+| `MultiMine-forge-<version>.jar` | Forge |
 
-Minecraft and loader versions for each platform are in `gradle.properties`.
-To add another loader (NeoForge, or an Architectury setup), add a module that depends on `:common`, implements `MultiMinePlatform`, and calls the four `DamageTracker` methods.
+Gradle downloads the JDKs it needs (21 for Paper, 25 for the mod loaders) on first run.
+
+| Module     | What it is |
+|------------|------------|
+| `core`     | Plain Java, no Minecraft dependency. All the mining/fade logic (`DamageTracker`). Used by both the plugin and the mod. |
+| `paper`    | Paper plugin. Forwards Bukkit block events to the tracker. |
+| `common`   | [Architectury](https://docs.architectury.dev/) common module. The Minecraft-side mod code every loader shares: the `ServerPlayerGameMode` mixin, the platform implementation, config loading and the tick scheduler. `core` is compiled into it. |
+| `fabric`   | Fabric entrypoint. Hooks server tick and stopping events. |
+| `neoforge` | NeoForge entrypoint. Same, with NeoForge events. |
+| `forge`    | Forge entrypoint. Same, with Forge events. |
+
+The mod modules use Architectury Loom's no-remap variant, since Minecraft 26.x ships unobfuscated.
+Minecraft, loader and plugin versions are in `gradle.properties`.
+
+Dev servers: `./gradlew :fabric:runServer`, `:neoforge:runServer`, `:forge:runServer` (accept the EULA in `<loader>/run/eula.txt` first), or `:paper:runServer`.

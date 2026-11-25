@@ -1,25 +1,25 @@
-package net.sideways_sky.multimine.fabric;
+package net.sideways_sky.multimine.mod;
 
 import net.minecraft.network.protocol.game.ClientboundLevelEventPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
-import net.sideways_sky.multimine.common.MultiMinePlatform;
+import net.sideways_sky.multimine.core.MultiMinePlatform;
 
-final class FabricPlatform implements MultiMinePlatform<FabricBlock, ServerPlayer> {
+final class ModPlatform implements MultiMinePlatform<ModBlock, ServerPlayer> {
     @Override
-    public int nextEntityId(FabricBlock block) {
+    public int nextEntityId(ModBlock block) {
         return block.level().getNextEntityId();
     }
 
     @Override
-    public void sendProgress(FabricBlock block, int entityId, int stage) {
+    public void sendProgress(ModBlock block, int entityId, int stage) {
         block.level().destroyBlockProgress(entityId, block.pos(), stage);
     }
 
     @Override
-    public void breakBlock(FabricBlock block, ServerPlayer breaker) {
+    public void breakBlock(ModBlock block, ServerPlayer breaker) {
         BlockState state = block.level().getBlockState(block.pos());
         if (breaker.gameMode.destroyBlock(block.pos())) {
             // Vanilla sends the break particles and sound to everyone except the breaker, because
@@ -31,12 +31,12 @@ final class FabricPlatform implements MultiMinePlatform<FabricBlock, ServerPlaye
     }
 
     @Override
-    public Task scheduleRepeating(FabricBlock block, long delay, long period, Runnable task) {
+    public Task scheduleRepeating(ModBlock block, long delay, long period, Runnable task) {
         return Scheduler.repeat(delay, period, t -> task.run())::cancel;
     }
 
     @Override
     public void debug(String message) {
-        MultimineFabric.LOGGER.info("Debug | {}", message);
+        MultiMineMod.LOGGER.info("Debug | {}", message);
     }
 }
