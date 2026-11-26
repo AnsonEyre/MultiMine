@@ -5,7 +5,7 @@ plugins {
 
 architectury {
     minecraft = rootProject.minecraft_version
-    common('fabric', 'neoforge', 'forge')
+    common('fabric', 'neoforge')
 }
 
 // The plain-Java core is compiled into this module, so it goes through Architectury's transforms

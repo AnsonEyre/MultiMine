@@ -9,6 +9,7 @@ pluginManagement {
             url = 'https://maven.architectury.dev/'
         }
         maven {
+            // Architectury Loom's own dependencies (e.g. mcinjector) are only published here.
             name = 'MinecraftForge'
             url = 'https://maven.minecraftforge.net/'
         }
@@ -32,5 +33,5 @@ include 'core'
 // paper: the Paper plugin.
 include 'paper'
 // common: Architectury common module. Minecraft-side mod code (mixins, platform impl) shared by every loader.
-// fabric / neoforge / forge: thin loader entrypoints.
-include 'common', 'fabric', 'neoforge', 'forge'
+// fabric / neoforge: thin loader entrypoints.
+include 'common', 'fabric', 'neoforge'

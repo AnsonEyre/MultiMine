@@ -21,6 +21,6 @@ subprojects {
 // Collect every platform jar in build/libs at the root.
 tasks.register('collectJars', Copy) {
     from(project(':paper').tasks.named('jar'))
-    ['fabric', 'neoforge', 'forge'].each { from(project(":$it").tasks.named('shadowJar')) }
+    ['fabric', 'neoforge'].each { from(project(":$it").tasks.named('shadowJar')) }
     into layout.buildDirectory.dir('libs')
 }

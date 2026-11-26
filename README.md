@@ -35,7 +35,6 @@ Jars land in `build/libs/`:
 | `MultiMine-<version>.jar` | Paper / Purpur / Folia |
 | `MultiMine-fabric-<version>.jar` | Fabric (needs Fabric API) |
 | `MultiMine-neoforge-<version>.jar` | NeoForge |
-| `MultiMine-forge-<version>.jar` | Forge |
 
 Gradle downloads the JDKs it needs (21 for Paper, 25 for the mod loaders) on first run.
 
@@ -46,9 +45,8 @@ Gradle downloads the JDKs it needs (21 for Paper, 25 for the mod loaders) on fir
 | `common`   | [Architectury](https://docs.architectury.dev/) common module. The Minecraft-side mod code every loader shares: the `ServerPlayerGameMode` mixin, the platform implementation, config loading and the tick scheduler. `core` is compiled into it. |
 | `fabric`   | Fabric entrypoint. Hooks server tick and stopping events. |
 | `neoforge` | NeoForge entrypoint. Same, with NeoForge events. |
-| `forge`    | Forge entrypoint. Same, with Forge events. |
 
 The mod modules use Architectury Loom's no-remap variant, since Minecraft 26.x ships unobfuscated.
 Minecraft, loader and plugin versions are in `gradle.properties`.
 
-Dev servers: `./gradlew :fabric:runServer`, `:neoforge:runServer`, `:forge:runServer` (accept the EULA in `<loader>/run/eula.txt` first), or `:paper:runServer`.
+Dev servers: `./gradlew :fabric:runServer`, `:neoforge:runServer` (accept the EULA in `<loader>/run/eula.txt` first), or `:paper:runServer`.
