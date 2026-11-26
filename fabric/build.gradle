@@ -49,6 +49,7 @@ jar {
 shadowJar {
     configurations = [project.configurations.shadowCommon]
     archiveClassifier = null
+    archiveVersion = "${version}+${rootProject.mod_jar_mc_range}"
 }
 
 assemble.dependsOn shadowJar

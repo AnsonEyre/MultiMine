@@ -2,9 +2,16 @@ package net.sideways_sky.multimine.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /** One partially mined block and how much each entity currently mining it has contributed. */
 public final class DamagedBlock<B, E> {
+    /**
+     * Breaker ids for the crack animations. Real entity ids are positive, so negative ids never
+     * clash with an entity's own crack animation, and the platform doesn't need to reserve ids.
+     */
+    private static final AtomicInteger NEXT_ID = new AtomicInteger(-1);
+
     private final DamageTracker<B, E> tracker;
     private final B block;
     private final int entityId;
@@ -18,7 +25,7 @@ public final class DamagedBlock<B, E> {
     DamagedBlock(DamageTracker<B, E> tracker, B block) {
         this.tracker = tracker;
         this.block = block;
-        this.entityId = tracker.platform.nextEntityId(block);
+        this.entityId = NEXT_ID.getAndDecrement();
         debugMessage("Created");
     }
 

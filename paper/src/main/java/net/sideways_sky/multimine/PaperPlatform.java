@@ -2,15 +2,21 @@ package net.sideways_sky.multimine;
 
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.sideways_sky.multimine.core.MultiMinePlatform;
-import org.bukkit.Particle;
-import org.bukkit.SoundCategory;
+import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.block.CraftBlock;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+/**
+ * Uses only the public Paper API (no server internals), so the same jar works on every supported
+ * Minecraft version.
+ */
 final class PaperPlatform implements MultiMinePlatform<Block, Entity> {
+    /** Vanilla sends block crack animations to players within this many blocks. */
+    private static final double VIEW_DISTANCE_SQUARED = 32 * 32;
+
     private final MultiMine plugin;
 
     PaperPlatform(MultiMine plugin) {
@@ -18,30 +24,28 @@ final class PaperPlatform implements MultiMinePlatform<Block, Entity> {
     }
 
     @Override
-    public int nextEntityId(Block block) {
-        return net.minecraft.world.entity.Entity.nextEntityId();
-    }
-
-    @Override
     public void sendProgress(Block block, int entityId, int stage) {
-        ((CraftWorld) block.getWorld()).getHandle().destroyBlockProgress(entityId, ((CraftBlock) block).getPosition(), stage);
+        // sendBlockDamage takes progress (0 to 1) and sends stage (int) (9 * progress), or clears the
+        // animation when progress is 0. Pick the progress that lands in the middle of the stage.
+        float progress = stage >= 0 && stage <= 9 ? Math.min(1F, (stage + 0.5F) / 9F) : 0F;
+        Location location = block.getLocation();
+        Location center = location.clone().add(0.5, 0.5, 0.5);
+        for (Player player : block.getWorld().getPlayers()) {
+            if (player.getLocation().distanceSquared(center) < VIEW_DISTANCE_SQUARED) {
+                player.sendBlockDamage(location, progress, entityId);
+            }
+        }
     }
 
     @Override
     public void breakBlock(Block block, Entity breaker) {
         if (breaker instanceof Player player) {
+            BlockData data = block.getBlockData();
             if (player.breakBlock(block)) {
-                block.getWorld().playSound(
-                        block.getLocation(),
-                        block.getBlockSoundGroup().getBreakSound(),
-                        SoundCategory.BLOCKS,
-                        1.0f, 1.0f
-                );
-                block.getWorld().spawnParticle(
-                        Particle.BLOCK,
-                        block.getLocation().add(0.5, 0.5, 0.5),
-                        20, 0.3, 0.3, 0.3,
-                        block.getBlockData());
+                // The server sends the break particles and sound to everyone except the breaker,
+                // because the breaker's client normally plays them itself. Here the server broke the
+                // block before the client finished, so send them to the breaker too.
+                player.playEffect(block.getLocation(), Effect.STEP_SOUND, data);
             }
         } else {
             block.breakNaturally(true);

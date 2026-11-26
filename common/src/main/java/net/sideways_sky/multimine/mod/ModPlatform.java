@@ -9,11 +9,6 @@ import net.sideways_sky.multimine.core.MultiMinePlatform;
 
 final class ModPlatform implements MultiMinePlatform<ModBlock, ServerPlayer> {
     @Override
-    public int nextEntityId(ModBlock block) {
-        return block.level().getNextEntityId();
-    }
-
-    @Override
     public void sendProgress(ModBlock block, int entityId, int stage) {
         block.level().destroyBlockProgress(entityId, block.pos(), stage);
     }

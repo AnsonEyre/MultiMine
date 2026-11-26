@@ -7,10 +7,11 @@ package net.sideways_sky.multimine.core;
  * @param <E> the platform's entity / player type.
  */
 public interface MultiMinePlatform<B, E> {
-    /** A fresh entity id, used as the "breaker" id for the crack animation of one damaged block. */
-    int nextEntityId(B block);
-
-    /** Send the crack animation for {@code block}. {@code stage} is 0-9, or -1 to clear it. */
+    /**
+     * Send the crack animation for {@code block} to nearby players. {@code stage} is 0-9, or -1 to
+     * clear it. {@code entityId} is the animation's "breaker" id; it's negative, so it never matches
+     * a real entity.
+     */
     void sendProgress(B block, int entityId, int stage);
 
     /** Break {@code block} as if {@code breaker} finished mining it. */

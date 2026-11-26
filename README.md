@@ -20,6 +20,21 @@ This mod is entirely server-side. Clients do not need it to play on a server. Th
 
 Inspired by [this mod](https://www.curseforge.com/minecraft/mc-mods/multi-mine)
 
+## Supported versions
+
+| Platform | Minecraft | Jar | Built from |
+|----------|-----------|-----|------------|
+| Paper / Purpur / Folia | 1.21.11 and up (tested 1.21.11 – 26.3) | `MultiMine-<version>+1.21.11-26.3.jar` | `master` |
+| Fabric (needs Fabric API) | 26.1 and up (tested 26.1.2 – 26.3) | `MultiMine-fabric-<version>+26.1-26.3.jar` | `master` |
+| NeoForge | 26.1 and up (tested 26.1.2 – 26.3) | `MultiMine-neoforge-<version>+26.1-26.3.jar` | `master` |
+| Fabric / NeoForge | 1.21.11 | `MultiMine-<loader>-<version>+1.21.11.jar` | `mc/1.21.11` branch |
+
+`master` only holds code for the newest Minecraft version. Older versions that need different
+mod code (1.21.11 is the last obfuscated release and runs on Java 21) live on frozen `mc/<version>`
+branches. Those branches are built and released once and don't get new features.
+
+The Paper plugin only uses the public Paper API, so one jar covers every version.
+
 ## Building
 
 One Gradle build produces every platform's jar:
@@ -28,20 +43,14 @@ One Gradle build produces every platform's jar:
 ./gradlew build collectJars
 ```
 
-Jars land in `build/libs/`:
-
-| Jar | Runs on |
-|-----|---------|
-| `MultiMine-<version>.jar` | Paper / Purpur / Folia |
-| `MultiMine-fabric-<version>.jar` | Fabric (needs Fabric API) |
-| `MultiMine-neoforge-<version>.jar` | NeoForge |
+Jars land in `build/libs/`.
 
 Gradle downloads the JDKs it needs (21 for Paper, 25 for the mod loaders) on first run.
 
 | Module     | What it is |
 |------------|------------|
 | `core`     | Plain Java, no Minecraft dependency. All the mining/fade logic (`DamageTracker`). Used by both the plugin and the mod. |
-| `paper`    | Paper plugin. Forwards Bukkit block events to the tracker. |
+| `paper`    | Paper plugin. Forwards Bukkit block events to the tracker. Public Paper API only, compiled against the oldest supported version. |
 | `common`   | [Architectury](https://docs.architectury.dev/) common module. The Minecraft-side mod code every loader shares: the `ServerPlayerGameMode` mixin, the platform implementation, config loading and the tick scheduler. `core` is compiled into it. |
 | `fabric`   | Fabric entrypoint. Hooks server tick and stopping events. |
 | `neoforge` | NeoForge entrypoint. Same, with NeoForge events. |
@@ -49,4 +58,10 @@ Gradle downloads the JDKs it needs (21 for Paper, 25 for the mod loaders) on fir
 The mod modules use Architectury Loom's no-remap variant, since Minecraft 26.x ships unobfuscated.
 Minecraft, loader and plugin versions are in `gradle.properties`.
 
-Dev servers: `./gradlew :fabric:runServer`, `:neoforge:runServer` (accept the EULA in `<loader>/run/eula.txt` first), or `:paper:runServer`.
+Dev servers: `./gradlew :fabric:runServer`, `:neoforge:runServer` (accept the EULA in `<loader>/run/eula.txt` first), or `:paper:runServer` (pick the version with `-Ppaper_run_version=26.3`).
+
+### Updating to a new Minecraft version
+
+1. If the new version needs mod code changes, first branch the current `master` as `mc/<old range>` so the old jars can still be rebuilt.
+2. Bump `minecraft_version`, `fabric_api_version`, `neoforge_version` and `mod_jar_mc_range` in `gradle.properties`, and widen `paper_jar_mc_range` once the Paper jar is tested on it.
+3. If older versions dropped out, raise the minimum in `fabric.mod.json` and `neoforge.mods.toml`.

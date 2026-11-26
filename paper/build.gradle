@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'xyz.jpenilla.run-paper' version '3.0.2'
-    id 'io.papermc.paperweight.userdev' version '2.0.0-beta.19'
 }
 
 base {
@@ -16,7 +15,9 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle(rootProject.paper_dev_bundle)
+    // Public Paper API only (no server internals), so one jar runs on every version from the
+    // oldest supported one up. Compile against the oldest supported version.
+    compileOnly "io.papermc.paper:paper-api:${rootProject.paper_api_version}"
     implementation project(':core')
 }
 
@@ -26,11 +27,16 @@ java {
 
 // Bundle the core classes into the plugin jar.
 jar {
+    archiveVersion = "${version}+${rootProject.paper_jar_mc_range}"
     from(project(':core').sourceSets.main.output)
+    // Only public API is used, so tell Paper the jar needs no remapping on load.
+    manifest.attributes('paperweight-mappings-namespace': 'mojang')
 }
 
 tasks.named('runServer') {
-    minecraftVersion(rootProject.paper_minecraft_version)
+    // Override with -Ppaper_run_version=<version>. Java 25 runs every supported version.
+    minecraftVersion(rootProject.paper_run_version)
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
 }
 
 processResources {
