@@ -22,16 +22,14 @@ Inspired by [this mod](https://www.curseforge.com/minecraft/mc-mods/multi-mine)
 
 ## Supported versions
 
-| Platform | Minecraft | Jar | Built from |
-|----------|-----------|-----|------------|
-| Paper / Purpur / Folia | 1.21.11 and up (tested 1.21.11 – 26.3) | `MultiMine-<version>+1.21.11-26.3.jar` | `master` |
-| Fabric (needs Fabric API) | 26.1 and up (tested 26.1.2 – 26.3) | `MultiMine-fabric-<version>+26.1-26.3.jar` | `master` |
-| NeoForge | 26.1 and up (tested 26.1.2 – 26.3) | `MultiMine-neoforge-<version>+26.1-26.3.jar` | `master` |
-| Fabric / NeoForge | 1.21.11 | `MultiMine-<loader>-<version>+1.21.11.jar` | `mc/1.21.11` branch |
+| Platform | Minecraft | Jar |
+|----------|-----------|-----|
+| Paper / Purpur / Folia | 1.21.11 and up (tested 1.21.11 – 26.3) | `MultiMine-<version>+1.21.11-26.3.jar` |
+| Fabric (needs Fabric API) | 26.1 and up (tested 26.1.2 – 26.3) | `MultiMine-fabric-<version>+26.1-26.3.jar` |
+| NeoForge | 26.1 and up (tested 26.1.2 – 26.3) | `MultiMine-neoforge-<version>+26.1-26.3.jar` |
 
-`master` only holds code for the newest Minecraft version. Older versions that need different
-mod code (1.21.11 is the last obfuscated release and runs on Java 21) live on frozen `mc/<version>`
-branches. Those branches are built and released once and don't get new features.
+The repo only holds code for the newest Minecraft version. Jars for older versions (such as the
+1.21.11 Fabric and NeoForge builds) are on Modrinth.
 
 The Paper plugin only uses the public Paper API, so one jar covers every version.
 
@@ -62,6 +60,5 @@ Dev servers: `./gradlew :fabric:runServer`, `:neoforge:runServer` (accept the EU
 
 ### Updating to a new Minecraft version
 
-1. If the new version needs mod code changes, first branch the current `master` as `mc/<old range>` so the old jars can still be rebuilt.
-2. Bump `minecraft_version`, `fabric_api_version`, `neoforge_version` and `mod_jar_mc_range` in `gradle.properties`, and widen `paper_jar_mc_range` once the Paper jar is tested on it.
-3. If older versions dropped out, raise the minimum in `fabric.mod.json` and `neoforge.mods.toml`.
+1. Bump `minecraft_version`, `fabric_api_version`, `neoforge_version` and `mod_jar_mc_range` in `gradle.properties`, and widen `paper_jar_mc_range` once the Paper jar is tested on it.
+2. If older versions dropped out, raise the minimum in `fabric.mod.json` and `neoforge.mods.toml`.
